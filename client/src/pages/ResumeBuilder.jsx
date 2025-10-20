@@ -61,7 +61,20 @@ const ResumeBuilder = () => {
     try {
       const { data } = await api.get('/api/resumes/get/' + resumeId, { headers: { Authorization: token } })
       if (data.resume) {
-        setResumeData(data.resume)
+        // Merge with defaults to ensure arrays/objects exist for all sections
+        setResumeData(prev => ({
+          ...prev,
+          ...data.resume,
+          personal_info: { ...(prev.personal_info || {}), ...(data.resume.personal_info || {}) },
+          experience: data.resume.experience || [],
+          education: data.resume.education || [],
+          project: data.resume.project || [],
+          skills: data.resume.skills || [],
+          certifications: data.resume.certifications || [],
+          template: data.resume.template || prev.template || "classic",
+          accent_color: data.resume.accent_color || prev.accent_color || "#3FA9F5",
+          public: typeof data.resume.public === 'boolean' ? data.resume.public : (prev.public ?? false)
+        }))
         document.title = data.resume.title
       }
     } catch (error) {
@@ -334,7 +347,7 @@ const ResumeBuilder = () => {
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <header className="bg-white border-b border-gray-200 px-4 py-3">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
+        <div className=" mx-auto flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Link to="/app/dashboard" className="flex items-center gap-2 text-gray-600 hover:text-gray-900">
               <ArrowLeftIcon size={20} />
@@ -465,25 +478,13 @@ const ResumeBuilder = () => {
       </header>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto p-4">
+      <div className=" mx-auto p-4">
         <div className="grid lg:grid-cols-2 gap-6 h-[calc(100vh-120px)]">
           {/* Left Panel - Form */}
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden flex flex-col">
             {/* Section Navigation */}
             <div className="border-b border-gray-200 p-4">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg font-semibold text-gray-900">Resume Builder</h2>
-                <div className="flex items-center gap-2">
-                  <TemplateSelector 
-                    selectedTemplate={resumeData.template} 
-                    onChange={(template) => setResumeData({...resumeData, template})} 
-                  />
-                  <ColorPicker 
-                    selectedColor={resumeData.accent_color} 
-                    onChange={(color) => setResumeData({...resumeData, accent_color: color})} 
-                  />
-                </div>
-              </div>
+             
               
               <div className="flex items-center gap-2 overflow-x-auto pb-2">
                 {sections.map((section, index) => {
@@ -592,22 +593,19 @@ const ResumeBuilder = () => {
           <div className="bg-white rounded-lg shadow-sm border border-gray-.200 overflow-hidden">
             <div className="border-b border-gray-200 p-4">
               <div className="flex items-center justify-between">
-                <h3 className="text-lg font-semibold text-gray-900">Live Preview</h3>
+                   <div className="flex items-center justify-between mb-4">
+                <h2 className="text-lg font-semibold text-gray-900">Live Preview</h2>
                 <div className="flex items-center gap-2">
-                  <button
-                    onClick={() => setRemoveBackground(!removeBackground)}
-                    className={`px-3 py-1 text-sm rounded transition-colors ${
-                      removeBackground 
-                        ? 'bg-blue-100 text-blue-700' 
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                    }`}
-                  >
-                    {removeBackground ? 'Show Background' : 'Hide Background'}
-                  </button>
-                  <span className="text-sm text-gray-500 capitalize px-2 py-1 bg-gray-100 rounded">
-                    {resumeData.template.replace('-', ' ')} Template
-                  </span>
+                  <TemplateSelector 
+                    selectedTemplate={resumeData.template} 
+                    onChange={(template) => setResumeData({...resumeData, template})} 
+                  />
+                  <ColorPicker 
+                    selectedColor={resumeData.accent_color} 
+                    onChange={(color) => setResumeData({...resumeData, accent_color: color})} 
+                  />
                 </div>
+              </div>
               </div>
             </div>
             
