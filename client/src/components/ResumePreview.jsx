@@ -17,6 +17,7 @@ const ResumePreview = ({data, template, accentColor, classes = "", exportLayout 
                 return <MinimalImageTemplate data={data} accentColor={accentColor}/>;
             case "technical":
                 return <TechnicalTemplate data={data} accentColor={accentColor}/>;
+            case "classic":
             default:
                 return <ClassicTemplate data={data} accentColor={accentColor}/>;
         }

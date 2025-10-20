@@ -57,6 +57,7 @@ const ResumeBuilder = () => {
   const activeSection = sections[activeSectionIndex]
 
   const loadExistingResume = async () => {
+    if (!resumeId) return;
     try {
       const { data } = await api.get('/api/resumes/get/' + resumeId, { headers: { Authorization: token } })
       if (data.resume) {
@@ -69,8 +70,10 @@ const ResumeBuilder = () => {
   }
 
   useEffect(() => {
-    loadExistingResume()
-  }, [])
+    if (token) {
+      loadExistingResume()
+    }
+  }, [resumeId, token])
 
   useEffect(() => {
     if (resumeData?.title) document.title = resumeData.title
@@ -313,11 +316,25 @@ const ResumeBuilder = () => {
     }
   }
 
+  if (!resumeData?._id) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-2xl font-semibold text-gray-800 mb-4">Resume Not Found</h2>
+          <p className="text-gray-600 mb-6">The resume you are looking for does not exist or you do not have permission to view it.</p>
+          <Link to="/app/dashboard" className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+            Back to Dashboard
+          </Link>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <header className="bg-white border-b border-gray-200 px-4 py-3">
-        <div className="flex items-center justify-between">
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Link to="/app/dashboard" className="flex items-center gap-2 text-gray-600 hover:text-gray-900">
               <ArrowLeftIcon size={20} />
@@ -448,12 +465,12 @@ const ResumeBuilder = () => {
       </header>
 
       {/* Main Content */}
-      <div className="grid lg:grid-cols-2 gap-6 h-[calc(100vh-120px)]">
-        <div>
+      <div className="max-w-7xl mx-auto p-4">
+        <div className="grid lg:grid-cols-2 gap-6 h-[calc(100vh-120px)]">
           {/* Left Panel - Form */}
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden flex flex-col">
             {/* Section Navigation */}
-            <div className="border-b border-gray-200 p-2">
+            <div className="border-b border-gray-200 p-4">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-lg font-semibold text-gray-900">Resume Builder</h2>
                 <div className="flex items-center gap-2">
@@ -572,7 +589,7 @@ const ResumeBuilder = () => {
           </div>
 
           {/* Right Panel - Enhanced Preview */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+          <div className="bg-white rounded-lg shadow-sm border border-gray-.200 overflow-hidden">
             <div className="border-b border-gray-200 p-4">
               <div className="flex items-center justify-between">
                 <h3 className="text-lg font-semibold text-gray-900">Live Preview</h3>
