@@ -36,7 +36,7 @@ const ColorPicker = ({selectedColor, onChange }) => {
         <span className="max-sm:hidden">Color</span>
       </button>
       {isOpen && (
-        <div className='grid grid-cols-4 w-64 gap-2 absolute top-full left-0 p-3 mt-2 z-10 bg-white rounded-md border border-gray-200 shadow-lg'>
+        <div className='grid grid-cols-4 w-64 gap-2 absolute top-full left-0 p-3 mt-2 z-50 bg-white rounded-md border border-gray-200 shadow-lg'>
             {colors.map((color)=>(
                 <div 
                   key={color.value} 

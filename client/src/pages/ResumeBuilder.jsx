@@ -225,9 +225,7 @@ const ResumeBuilder = () => {
       }
       
       const frontendOrigin = window.location.origin
-      const previewUrl = resumeData?.public
-        ? `${frontendOrigin}/view/${resumeId}?t=${encodeURIComponent(resumeData.template)}&c=${encodeURIComponent(resumeData.accent_color || '')}`
-        : undefined
+      const previewUrl = `${frontendOrigin}/view/${resumeId}?t=${encodeURIComponent(resumeData.template)}&c=${encodeURIComponent(resumeData.accent_color || '')}`
         
       const payload = {
         resume: resumeData,
@@ -275,9 +273,7 @@ const ResumeBuilder = () => {
       }
       
       const frontendOrigin = window.location.origin
-      const previewUrl = resumeData?.public
-        ? `${frontendOrigin}/view/${resumeId}?t=${encodeURIComponent(resumeData.template)}&c=${encodeURIComponent(resumeData.accent_color || '')}`
-        : undefined
+      const previewUrl = `${frontendOrigin}/view/${resumeId}?t=${encodeURIComponent(resumeData.template)}&c=${encodeURIComponent(resumeData.accent_color || '')}`
         
       const payload = {
         resume: resumeData,
@@ -321,7 +317,7 @@ const ResumeBuilder = () => {
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <header className="bg-white border-b border-gray-200 px-4 py-3">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
+        <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Link to="/app/dashboard" className="flex items-center gap-2 text-gray-600 hover:text-gray-900">
               <ArrowLeftIcon size={20} />
@@ -452,12 +448,12 @@ const ResumeBuilder = () => {
       </header>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto p-4">
-        <div className="grid lg:grid-cols-2 gap-6 h-[calc(100vh-120px)]">
+      <div className="grid lg:grid-cols-2 gap-6 h-[calc(100vh-120px)]">
+        <div>
           {/* Left Panel - Form */}
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden flex flex-col">
             {/* Section Navigation */}
-            <div className="border-b border-gray-200 p-4">
+            <div className="border-b border-gray-200 p-2">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-lg font-semibold text-gray-900">Resume Builder</h2>
                 <div className="flex items-center gap-2">
