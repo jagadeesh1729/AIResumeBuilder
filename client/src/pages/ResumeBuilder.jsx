@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { ArrowLeftIcon, Briefcase, CheckCircle, ChevronLeft, ChevronRight, DownloadIcon, EyeIcon, FileText, FolderIcon, GraduationCap, Save, Share2Icon, Sparkles, User } from 'lucide-react'
+import { ArrowLeftIcon, Award, Briefcase, CheckCircle, ChevronLeft, ChevronRight, DownloadIcon, EyeIcon, FileText, FolderIcon, GraduationCap, Save, Share2Icon, Sparkles, User } from 'lucide-react'
 import PersonalInfoForm from '../components/PersonalInfoForm'
 import ResumePreview from '../components/ResumePreview'
 import TemplateSelector from '../components/TemplateSelector'
@@ -10,6 +10,7 @@ import ExperienceForm from '../components/ExperienceForm'
 import EducationForm from '../components/EducationForm'
 import ProjectForm from '../components/ProjectForm'
 import SkillsForm from '../components/SkillsForm'
+import CertificationForm from '../components/CertificationForm'
 import { useSelector } from 'react-redux'
 import api from '../configs/api'
 import toast from 'react-hot-toast'
@@ -28,6 +29,7 @@ const ResumeBuilder = () => {
     education: [],
     project: [],
     skills: [],
+    certifications: [],
     template: "classic",
     accent_color: "#3FA9F5",
     public: false,
@@ -48,6 +50,7 @@ const ResumeBuilder = () => {
     { id: "experience", name: "Experience", icon: Briefcase },
     { id: "education", name: "Education", icon: GraduationCap },
     { id: "projects", name: "Projects", icon: FolderIcon },
+    { id: "certifications", name: "Certifications", icon: Award },
     { id: "skills", name: "Skills", icon: Sparkles },
   ]
 
@@ -83,6 +86,7 @@ const ResumeBuilder = () => {
       case 'experience': return resumeData.experience?.length > 0
       case 'education': return resumeData.education?.length > 0
       case 'projects': return resumeData.project?.length > 0
+      case 'certifications': return resumeData.certifications?.length > 0
       case 'skills': return resumeData.skills?.length > 0
       default: return false
     }
@@ -526,6 +530,12 @@ const ResumeBuilder = () => {
                   <ProjectForm 
                     data={resumeData.project} 
                     onChange={(data) => setResumeData({...resumeData, project: data})} 
+                  />
+                )}
+                {activeSection.id === "certifications" && (
+                  <CertificationForm
+                    data={resumeData.certifications}
+                    onChange={(data) => setResumeData({...resumeData, certifications: data})}
                   />
                 )}
                 {activeSection.id === "skills" && (

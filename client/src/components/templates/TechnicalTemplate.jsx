@@ -114,28 +114,26 @@ const TechnicalTemplate = ({ data, accentColor }) => {
   }, [categories, fallbackCategories]);
 
   return (
-    <div className="max-w-4xl mx-auto bg-white text-gray-800">
+    <div className="max-w-4xl mx-auto bg-white text-gray-800 text-sm font-sans">
       {/* Header */}
-      <header className="px-8 pt-8 pb-5 border-b" style={{ borderColor: accentColor }}>
-        <h1 className="text-3xl sm:text-4xl font-semibold tracking-tight">
+      <header className="px-6 pt-6 pb-4 border-b-2" style={{ borderColor: accentColor }}>
+        <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight">
           {data.personal_info?.full_name || "Your Name"}
         </h1>
-        {/* Removed title to keep header to exactly two lines (name + contact) */}
-
-        <div className="mt-3">
-          <HeaderContact personal={data.personal_info} className="text-sm text-gray-700" />
+        <div className="mt-2">
+          <HeaderContact personal={data.personal_info} className="text-xs sm:text-sm text-gray-700" />
         </div>
       </header>
 
-      {/* Body: Two columns */}
-      <div className="p-8">
+      {/* Body */}
+      <div className="p-6">
         {/* Professional Summary */}
         {data.professional_summary && (
-          <section className="mb-8 break-inside-avoid">
-            <h2 className="text-base font-semibold uppercase tracking-wide mb-4" style={{ color: accentColor }}>
+          <section className="mb-6 break-inside-avoid">
+            <h2 className="text-sm font-semibold uppercase tracking-wide mb-3" style={{ color: accentColor }}>
               Summary
             </h2>
-            <p className="text-sm text-gray-700 whitespace-pre-line">
+            <p className="text-sm text-gray-700 whitespace-pre-line leading-normal">
               {data.professional_summary}
             </p>
           </section>
@@ -143,20 +141,20 @@ const TechnicalTemplate = ({ data, accentColor }) => {
         {/* Skills */}
         {rawSkills.length > 0 && (
           <section className="mb-6 break-inside-avoid">
-            <h2 className="text-base font-semibold uppercase tracking-wide mb-4" style={{ color: accentColor }}>
+            <h2 className="text-sm font-semibold uppercase tracking-wide mb-3" style={{ color: accentColor }}>
               Skills
             </h2>
             {loadingCats && (
-              <div className="mt-2 text-xs text-gray-500">Categorizing skills…</div>
+              <div className="mt-1 text-xs text-gray-500">Categorizing skills…</div>
             )}
-            <table className="mt-2 w-full text-xs sm:text-sm ">
+            <table className="w-full text-xs sm:text-sm">
               <tbody>
                 {displayCategories.map(([cat, list]) => (
                   <tr key={cat} className="align-top">
-                    <th className="text-left font-semibold align-top whitespace-nowrap pr-6" style={{ color: accentColor }}>
+                    <th className="text-left font-semibold align-top whitespace-nowrap pr-4 py-1" style={{ color: accentColor }}>
                       {cat}
                     </th>
-                    <td className="py-1 text-gray-700">
+                    <td className="py-1 text-gray-700 leading-normal">
                       {list.join(", ")}
                     </td>
                   </tr>
@@ -167,16 +165,16 @@ const TechnicalTemplate = ({ data, accentColor }) => {
         )}
         {/* Education */}
         {data.education && data.education.length > 0 && (
-          <section className="mb-8 break-inside-avoid">
-            <h2 className="text-base font-semibold uppercase tracking-wide mb-4" style={{ color: accentColor }}>
+          <section className="mb-6 break-inside-avoid">
+            <h2 className="text-sm font-semibold uppercase tracking-wide mb-3" style={{ color: accentColor }}>
               Education
             </h2>
             <div className="space-y-3">
               {data.education.map((edu, idx) => (
-                <div key={idx} className="border-l pl-4 break-inside-avoid" style={{ borderColor: accentColor }}>
+                <div key={idx} className="border-l-2 pl-3 break-inside-avoid" style={{ borderColor: accentColor }}>
                   <div className="flex flex-wrap items-baseline justify-between gap-2">
                     <div>
-                      <h3 className="text-md font-semibold text-gray-900">
+                      <h3 className="text-base font-semibold text-gray-900">
                         {edu.degree} {edu.field ? `in ${edu.field}` : ""}
                       </h3>
                       <p className="text-sm" style={{ color: accentColor }}>{edu.institution}</p>
@@ -191,18 +189,40 @@ const TechnicalTemplate = ({ data, accentColor }) => {
             </div>
           </section>
         )}
+        {/* Certifications */}
+        {data.certifications && data.certifications.length > 0 && (
+          <section className="mb-6 break-inside-avoid">
+            <h2 className="text-sm font-semibold uppercase tracking-wide mb-3" style={{ color: accentColor }}>
+              Certifications
+            </h2>
+            <div className="space-y-3">
+              {data.certifications.map((cert, idx) => (
+                <div key={idx} className="border-l-2 pl-3 break-inside-avoid" style={{ borderColor: accentColor }}>
+                  <div className="flex flex-wrap items-baseline justify-between gap-2">
+                    <div>
+                      <h3 className="text-base font-semibold text-gray-900">{cert.name}</h3>
+                      <p className="text-sm" style={{ color: accentColor }}>{cert.organization}</p>
+                    </div>
+                    <div className="text-xs text-gray-600">{formatDate(cert.date)}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
         {/* Projects */}
         {data.project && data.project.length > 0 && (
-          <section className="mb-8 break-inside-avoid">
-            <h2 className="text-base font-semibold uppercase tracking-wide mb-4" style={{ color: accentColor }}>
+          <section className="mb-6 break-inside-avoid">
+            <h2 className="text-sm font-semibold uppercase tracking-wide mb-3" style={{ color: accentColor }}>
               Projects
             </h2>
-            <div className="space-y-5">
+            <div className="space-y-4">
               {data.project.map((p, idx) => (
-                <div key={idx} className="border-l pl-4 break-inside-avoid" style={{ borderColor: accentColor }}>
-                  <h3 className="text-md font-medium text-gray-900">{p.name}</h3>
+                <div key={idx} className="border-l-2 pl-3 break-inside-avoid" style={{ borderColor: accentColor }}>
+                  <h3 className="text-base font-medium text-gray-900">{p.name}</h3>
+                  {p.type && <p className="text-xs" style={{ color: accentColor }}>{p.type}</p>}
                   {p.description && (
-                    <div className="mt-1 text-sm text-gray-700 whitespace-pre-line">{p.description}</div>
+                    <div className="mt-1 text-sm text-gray-700 whitespace-pre-line leading-normal">{p.description}</div>
                   )}
                 </div>
               ))}
@@ -211,13 +231,13 @@ const TechnicalTemplate = ({ data, accentColor }) => {
         )}
         {/* Experience */}
         {data.experience && data.experience.length > 0 && (
-          <section className="mb-8 break-inside-avoid">
-            <h2 className="text-base font-semibold uppercase tracking-wide mb-4" style={{ color: accentColor }}>
+          <section className="break-inside-avoid">
+            <h2 className="text-sm font-semibold uppercase tracking-wide mb-3" style={{ color: accentColor }}>
               Experience
             </h2>
-            <div className="space-y-5">
+            <div className="space-y-4">
               {data.experience.map((exp, idx) => (
-                <div key={idx} className="border-l pl-4 break-inside-avoid" style={{ borderColor: accentColor }}>
+                <div key={idx} className="border-l-2 pl-3 break-inside-avoid" style={{ borderColor: accentColor }}>
                   <div className="flex flex-wrap items-baseline justify-between gap-2">
                     <div>
                       <h3 className="text-lg font-medium text-gray-900">{exp.position}</h3>
@@ -228,7 +248,7 @@ const TechnicalTemplate = ({ data, accentColor }) => {
                     </div>
                   </div>
                   {exp.description && (
-                    <div className="mt-2 text-sm text-gray-700 whitespace-pre-line">{exp.description}</div>
+                    <div className="mt-2 text-sm text-gray-700 whitespace-pre-line leading-normal">{exp.description}</div>
                   )}
                 </div>
               ))}

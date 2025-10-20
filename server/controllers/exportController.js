@@ -134,15 +134,20 @@ function buildDocxFromResume(resume, template = 'classic', accentColor = '#3FA9F
     children.push(heading('Projects'));
     projValid.forEach((p) => {
       if (p?.name) children.push(paragraph(p.name));
+      if (p?.type) children.push(paragraph(p.type, { run: { size: 20, italic: true } }));
       if (p?.description) children.push(paragraph(p.description));
     });
   }
 
   // Certifications (only if any)
-  const certs = Array.isArray(resume?.certifications) ? resume.certifications.filter(Boolean) : [];
-  if (certs.length) {
+  const certs = Array.isArray(resume?.certifications) ? resume.certifications : [];
+  const certsValid = certs.filter(c => c && (c.name || c.organization));
+  if (certsValid.length) {
     children.push(heading('Certifications'));
-    children.push(paragraph(certs.join(', ')));
+    certsValid.forEach((cert) => {
+      const line = `${cert?.name || ''}${cert?.organization ? ' | ' + cert.organization : ''}`.trim();
+      if (line) children.push(paragraph(line));
+    });
   }
 
   const d = new Document({
@@ -217,12 +222,14 @@ function htmlFromResume(resume, template = 'classic', accentColor = '#3FA9F5') {
   const proj = Array.isArray(resume?.project) ? resume.project.filter(p=>p&&(p.name||p.description)) : [];
   if (proj.length) {
     parts.push(`<div class="section"><h2>Projects</h2>`);
-    parts.push(proj.map(p=>`<p><strong>${esc(p?.name||'')}</strong><br>${esc(p?.description||'')}</p>`).join(''));
+    parts.push(proj.map(p=>`<div class="project-item"><p><strong>${esc(p?.name||'')}</strong></p>${p.type ? `<p><em>${esc(p.type)}</em></p>` : ''}<p>${esc(p?.description||'')}</p></div>`).join(''));
     parts.push(`</div>`);
   }
-  const certs = Array.isArray(resume?.certifications) ? resume.certifications.filter(Boolean) : [];
+  const certs = Array.isArray(resume?.certifications) ? resume.certifications.filter(c=>c&&(c.name||c.organization)) : [];
   if (certs.length) {
-    parts.push(`<div class="section"><h2>Certifications</h2><p>${esc(certs.join(', '))}</p></div>`);
+    parts.push(`<div class="section"><h2>Certifications</h2>`);
+    parts.push(certs.map(c=>`<p><strong>${esc(c?.name||'')}</strong>${c.organization ? ` | ${esc(c.organization)}` : ''}</p>`).join(''));
+    parts.push(`</div>`);
   }
   parts.push(`</body></html>`);
   return parts.join('');
