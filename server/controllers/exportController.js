@@ -38,7 +38,8 @@ function getTemplateStyles(template, accentColor) {
         .technical-template .contact{grid-column:1/-1;text-align:center}
         .technical-template h2{color:${accentColor}}
       `;
-    default: // classic
+    case 'classic':
+    default:
       return baseStyles + `
         .classic-template h1{text-align:center;color:${accentColor};border-bottom:3px solid ${accentColor};padding-bottom:8px}
         .classic-template .contact{text-align:center}
