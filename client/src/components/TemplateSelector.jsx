@@ -43,7 +43,7 @@ const TemplateSelector = ({ selectedTemplate, onChange }) => {
         <Layout size={14} /> <span className='max-sm:hidden'>Template</span>
       </button>
       {isOpen && (
-        <div className='absolute top-full w-80 p-3 mt-2 space-y-3 z-10 bg-white rounded-md border border-gray-200 shadow-lg max-h-96 overflow-y-auto'>
+        <div className='absolute top-full w-80 p-3 mt-2 space-y-3 z-50 bg-white rounded-md border border-gray-200 shadow-lg max-h-96 overflow-y-auto'>
             {templates.map((template)=>(
                 <div key={template.id} onClick={()=> {onChange(template.id); setIsOpen(false)}} className={`relative p-4 border rounded-md cursor-pointer transition-all hover:shadow-sm ${selectedTemplate === template.id ?
                     "border-[var(--brand-primary)] bg-[#3FA9F522] shadow-sm"
