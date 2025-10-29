@@ -135,8 +135,8 @@ const buildSectionData = (resume = {}) => {
         }))
     : []
 
-  const certifications = Array.isArray(resume?.certifications)
-    ? resume.certifications
+  const certifications = Array.isArray(resume?.certification)
+    ? resume.certification
         .filter((cert) => cert && (cert.name || cert.organization))
         .map((cert) => ({
           name: sanitizeInline(cert.name),
@@ -217,7 +217,7 @@ const buildContactHtml = (contactList) => {
     .join('<span class="separator">•</span>')}</div>`
 }
 
-const renderClassic = (model, accent) => {
+const renderClassic = (model, accent, padding) => {
   const { personal, sections, order } = model
 
   const sectionRenderers = {
@@ -344,7 +344,7 @@ const renderClassic = (model, accent) => {
 
   const sectionsHtml = order.map((id) => sectionRenderers[id]?.() || '').join('')
 
-  return `<div class="resume-page classic-template" data-accent="${accent}">
+  return `<div class="resume-page classic-template" data-accent="${accent}" style="padding: ${padding || '52px 64px'};">
     <header class="resume-header" style="text-align: center; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom-width: 2px;">
       <h1 style="font-size: 2.25rem; line-height: 2.5rem; font-weight: 700; margin-bottom: 0.25rem;">${personal.fullName}</h1>
       ${
@@ -358,7 +358,7 @@ const renderClassic = (model, accent) => {
   </div>`
 }
 
-const renderModern = (model, accent) => {
+const renderModern = (model, accent, padding) => {
   const { personal, sections, order } = model
 
   const sectionRenderers = {
@@ -485,7 +485,7 @@ const renderModern = (model, accent) => {
 
   const sectionsHtml = order.map((id) => sectionRenderers[id]?.() || '').join('')
 
-  return `<div class="resume-page modern-template" data-accent="${accent}">
+  return `<div class="resume-page modern-template" data-accent="${accent}" style="padding: ${padding || '0'};">
     <header class="resume-header modern">
       <h1>${personal.fullName}</h1>
       ${
@@ -501,7 +501,7 @@ const renderModern = (model, accent) => {
   </div>`
 }
 
-const renderMinimal = (model, accent) => {
+const renderMinimal = (model, accent, padding) => {
   const { personal, sections, order } = model
 
   const sectionRenderers = {
@@ -619,7 +619,7 @@ const renderMinimal = (model, accent) => {
 
   const sectionsHtml = order.map((id) => sectionRenderers[id]?.() || '').join('')
 
-  return `<div class="resume-page minimal-template" data-accent="${accent}">
+  return `<div class="resume-page minimal-template" data-accent="${accent}" style="padding: ${padding || '56px 64px'};">
     <header class="resume-header minimal">
       <h1>${personal.fullName}</h1>
       ${buildContactHtml(personal.contactList)}
@@ -628,7 +628,7 @@ const renderMinimal = (model, accent) => {
   </div>`
 }
 
-const renderMinimalImage = (model, accent) => {
+const renderMinimalImage = (model, accent, padding) => {
   const { personal, sections, order } = model
   const mainIds = order.filter((id) =>
     ['summary', 'experience', 'projects'].includes(id)
@@ -746,7 +746,7 @@ const renderMinimalImage = (model, accent) => {
   const renderGroup = (ids) =>
     ids.map((id) => sectionRenderers[id]?.() || '').join('')
 
-  return `<div class="resume-page minimal-image-template" data-accent="${accent}">
+  return `<div class="resume-page minimal-image-template" data-accent="${accent}" style="padding: ${padding || '0'};">
     <div class="mi-grid">
       <aside class="mi-sidebar">
         <h1>${personal.fullName}</h1>
@@ -768,7 +768,7 @@ const chunkArray = (items, size) => {
   return result
 }
 
-const renderTechnical = (model, accent) => {
+const renderTechnical = (model, accent, padding) => {
   const { personal, sections, order } = model
 
   const sectionRenderers = {
@@ -899,7 +899,7 @@ const renderTechnical = (model, accent) => {
 
   const sectionsHtml = order.map((id) => sectionRenderers[id]?.() || '').join('')
 
-  return `<div class="resume-page technical-template" data-accent="${accent}">
+  return `<div class="resume-page technical-template" data-accent="${accent}" style="padding: ${padding || '48px 56px'};">
     <header class="resume-header technical">
       <h1>${personal.fullName}</h1>
       ${buildContactHtml(personal.contactList)}
@@ -908,13 +908,13 @@ const renderTechnical = (model, accent) => {
   </div>`
 }
 
-const getTemplateStyles = (template) => {
+const getTemplateStyles = (template, padding) => {
   const base = `
     *{box-sizing:border-box}
     html,body{margin:0;padding:0;background:#f3f4f6;color:#1f2937;font-family:'Inter','Segoe UI',Arial,sans-serif}
     @page{size:Letter;margin:0.5in}
     body{display:flex;justify-content:center;padding:40px 0}
-    .resume-page{width:816px;min-height:1056px;background:#fff;padding:52px 64px;box-shadow:0 12px 40px rgba(15,23,42,0.08);border-radius:16px}
+    .resume-page{width:816px;min-height:1056px;background:#fff;padding:${padding || '52px 64px'};box-shadow:0 12px 40px rgba(15,23,42,0.08);border-radius:16px}
     h1{margin:0;font-size:32px;font-weight:700;letter-spacing:-0.01em;color:#0f172a}
     .headline{margin-top:6px;font-size:15px;color:#334155}
     .contact-line{margin-top:10px;display:flex;flex-wrap:wrap;gap:10px;font-size:13px;color:#475569}
@@ -1005,7 +1005,8 @@ const getTemplateStyles = (template) => {
 export const generateResumeHtml = (
   resume = {},
   template = DEFAULT_TEMPLATE,
-  accentColor = DEFAULT_ACCENT
+  accentColor = DEFAULT_ACCENT,
+  padding
 ) => {
   const chosenTemplate = ALLOWED_TEMPLATES.has(template)
     ? template
@@ -1024,8 +1025,8 @@ export const generateResumeHtml = (
     technical: renderTechnical,
   }
 
-  const body = templateRenderers[chosenTemplate](model, accent)
-  const styles = getTemplateStyles(chosenTemplate)
+  const body = templateRenderers[chosenTemplate](model, accent, padding)
+  const styles = getTemplateStyles(chosenTemplate, padding)
 
   return `<!doctype html>
   <html lang="en">
@@ -1039,4 +1040,3 @@ export const generateResumeHtml = (
     </body>
   </html>`
 }
-

@@ -43,6 +43,24 @@ const ResumeBuilder = () => {
     { id: "skills", name: "Skills", icon: Sparkles },
   ]
 
+  useEffect(() => {
+    dispatch(setResume({
+      _id: 'some-id',
+    title: 'Untitled Resume',
+    personal_info: {},
+    professional_summary: "",
+    experience: [],
+    education: [],
+    project: [],
+    skills: [],
+    certifications: [],
+    template: "classic",
+    accent_color: "#3FA9F5",
+    public: false,
+    sections: initialSections,
+    }))
+  }, [])
+
   const sections = resumeData?.sections || initialSections
   const activeSection = sections[activeSectionIndex]
 
@@ -54,24 +72,24 @@ const ResumeBuilder = () => {
     dispatch(setResume({ ...resumeData, sections: items }))
   }
 
-  const loadExistingResume = async () => {
-    if (!resumeId) return;
-    try {
-      const { data } = await api.get('/api/resumes/get/' + resumeId, { headers: { Authorization: token } })
-      if (data.resume) {
-        dispatch(setResume(data.resume));
-        document.title = data.resume.title
-      }
-    } catch (error) {
-      console.log(error.message)
-    }
-  }
+  // const loadExistingResume = async () => {
+  //   if (!resumeId) return;
+  //   try {
+  //     const { data } = await api.get('/api/resumes/get/' + resumeId, { headers: { Authorization: token } })
+  //     if (data.resume) {
+  //       dispatch(setResume(data.resume));
+  //       document.title = data.resume.title
+  //     }
+  //   } catch (error) {
+  //     console.log(error.message)
+  //   }
+  // }
 
-  useEffect(() => {
-    if (token) {
-      loadExistingResume()
-    }
-  }, [resumeId, token])
+  // useEffect(() => {
+  //   if (token) {
+  //     loadExistingResume()
+  //   }
+  // }, [resumeId, token])
 
   useEffect(() => {
     if (resumeData?.title) document.title = resumeData.title
@@ -87,7 +105,7 @@ const ResumeBuilder = () => {
       case 'experience': return resumeData.experience?.length > 0
       case 'education': return resumeData.education?.length > 0
       case 'projects': return resumeData.project?.length > 0
-      case 'certifications': return resumeData.certification?.length > 0
+      case 'certifications': return resumeData.certifications?.length > 0
       case 'skills': return resumeData.skills?.length > 0
       default: return false
     }
@@ -120,7 +138,7 @@ const ResumeBuilder = () => {
 
   const debouncedSave = useCallback(
     debounce(() => saveResume(false), 2000),
-    []
+    [resumeData]
   )
 
   useEffect(() => {
@@ -184,7 +202,7 @@ const ResumeBuilder = () => {
         toast.error('Please save the resume first')
         return
       }
-      
+
       const exportData = {
         resume: resumeData,
         template: resumeData.template,
@@ -192,14 +210,14 @@ const ResumeBuilder = () => {
         padding,
         margin,
       }
-      
-      const { data } = await api.post('/api/export/docx', exportData, { 
-        responseType: 'blob', 
-        headers: { Authorization: token } 
+
+      const { data } = await api.post('/api/export/docx', exportData, {
+        responseType: 'blob',
+        headers: { Authorization: token }
       })
-      
-      const url = URL.createObjectURL(new Blob([data], { 
-        type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' 
+
+      const url = URL.createObjectURL(new Blob([data], {
+        type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
       }))
       const a = document.createElement('a')
       a.href = url
@@ -225,7 +243,7 @@ const ResumeBuilder = () => {
         toast.error('Please save the resume first')
         return
       }
-      
+
       const payload = {
         resume: resumeData,
         template: resumeData.template,
@@ -233,18 +251,18 @@ const ResumeBuilder = () => {
         padding,
         margin,
       }
-      
-      const response = await api.post('/api/export/pdf', payload, { 
-        responseType: 'blob', 
-        validateStatus: () => true, 
-        headers: { Authorization: token } 
+
+      const response = await api.post('/api/export/pdf', payload, {
+        responseType: 'blob',
+        validateStatus: () => true,
+        headers: { Authorization: token }
       })
-      
+
       if (response.status !== 200) {
         toast.error('Server PDF export unavailable. Using print to PDF.')
         return downloadResume()
       }
-      
+
       const url = URL.createObjectURL(new Blob([response.data], { type: 'application/pdf' }))
       const a = document.createElement('a')
       a.href = url
@@ -271,7 +289,7 @@ const ResumeBuilder = () => {
         toast.error('Please save the resume first')
         return downloadResume()
       }
-      
+
       const payload = {
         resume: resumeData,
         template: resumeData.template,
@@ -279,18 +297,18 @@ const ResumeBuilder = () => {
         padding,
         margin,
       }
-      
-      const response = await api.post('/api/export/pdf', payload, { 
-        responseType: 'blob', 
-        validateStatus: () => true, 
-        headers: { Authorization: token } 
+
+      const response = await api.post('/api/export/pdf', payload, {
+        responseType: 'blob',
+        validateStatus: () => true,
+        headers: { Authorization: token }
       })
-      
+
       if (response.status !== 200) {
         toast.error('Server PDF preview unavailable. Opening print preview.')
         return downloadResume()
       }
-      
+
       const url = URL.createObjectURL(new Blob([response.data], { type: 'application/pdf' }))
       window.open(url, '_blank', 'noopener')
       setTimeout(() => URL.revokeObjectURL(url), 60_000)
@@ -311,19 +329,19 @@ const ResumeBuilder = () => {
     }
   }
 
-  if (!resumeData?._id) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <h2 className="text-2xl font-semibold text-gray-800 mb-4">Resume Not Found</h2>
-          <p className="text-gray-600 mb-6">The resume you are looking for does not exist or you do not have permission to view it.</p>
-          <Link to="/app/dashboard" className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
-            Back to Dashboard
-          </Link>
-        </div>
-      </div>
-    )
-  }
+  // if (!resumeData?._id) {
+  //   return (
+  //     <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+  //       <div className="text-center">
+  //         <h2 className="text-2xl font-semibold text-gray-800 mb-4">Resume Not Found</h2>
+  //         <p className="text-gray-600 mb-6">The resume you are looking for does not exist or you do not have permission to view it.</p>
+  //         <Link to="/app/dashboard" className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+  //           Back to Dashboard
+  //         </Link>
+  //       </div>
+  //     </div>
+  //   )
+  // }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -335,9 +353,9 @@ const ResumeBuilder = () => {
               <ArrowLeftIcon size={20} />
               <span className="hidden sm:inline">Back to Dashboard</span>
             </Link>
-            
+
             <div className="h-6 w-px bg-gray-300" />
-            
+
             <input
               type="text"
               value={resumeData.title}
@@ -354,7 +372,7 @@ const ResumeBuilder = () => {
                 Saving...
               </div>
             )}
-            
+
             {lastSaved && !autoSaving && (
               <div className="text-sm text-gray-500">
                 Saved {lastSaved.toLocaleTimeString()}
@@ -377,7 +395,7 @@ const ResumeBuilder = () => {
                 <EyeIcon size={16} />
                 <span className="hidden sm:inline">Preview</span>
               </button>
-              
+
               {previewOpen && (
                 <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
                   <button
@@ -406,7 +424,7 @@ const ResumeBuilder = () => {
                 <DownloadIcon size={16} />
                 <span className="hidden sm:inline">Export</span>
               </button>
-              
+
               {exportOpen && (
                 <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
                   <button
@@ -437,8 +455,8 @@ const ResumeBuilder = () => {
             <button
               onClick={changeResumeVisibility}
               className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-colors ${
-                resumeData.public 
-                  ? 'bg-orange-100 text-orange-700 hover:bg-orange-200' 
+                resumeData.public
+                  ? 'bg-orange-100 text-orange-700 hover:bg-orange-200'
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               }`}
             >
@@ -469,12 +487,12 @@ const ResumeBuilder = () => {
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-lg font-semibold text-gray-900">Resume Builder</h2>
                 <div className="flex items-center gap-2">
-                  <TemplateSelector 
-                    selectedTemplate={resumeData.template} 
+                  <TemplateSelector
+                    selectedTemplate={resumeData.template}
                     onChange={(template) => dispatch(setResume({...resumeData, template}))}
                   />
-                  <ColorPicker 
-                    selectedColor={resumeData.accent_color} 
+                  <ColorPicker
+                    selectedColor={resumeData.accent_color}
                     onChange={(color) => dispatch(setResume({...resumeData, accent_color: color}))}
                   />
                 </div>
@@ -527,44 +545,44 @@ const ResumeBuilder = () => {
                 <PaddingMarginControls />
               <div className="space-y-6">
                 {activeSection.id === "personal" && (
-                  <PersonalInfoForm 
-                    data={resumeData.personal_info} 
+                  <PersonalInfoForm
+                    data={resumeData.personal_info}
                     onChange={(data) => dispatch(setResume({...resumeData, personal_info: data}))}
                   />
                 )}
                 {activeSection.id === "summary" && (
-                  <ProfessionalSummaryForm 
-                    data={resumeData.professional_summary} 
+                  <ProfessionalSummaryForm
+                    data={resumeData.professional_summary}
                     onChange={(data) => dispatch(setResume({...resumeData, professional_summary: data}))}
                   />
                 )}
                 {activeSection.id === "experience" && (
-                  <ExperienceForm 
-                    data={resumeData.experience} 
+                  <ExperienceForm
+                    data={resumeData.experience}
                     onChange={(data) => dispatch(setResume({...resumeData, experience: data}))}
                   />
                 )}
                 {activeSection.id === "education" && (
-                  <EducationForm 
-                    data={resumeData.education} 
+                  <EducationForm
+                    data={resumeData.education}
                     onChange={(data) => dispatch(setResume({...resumeData, education: data}))}
                   />
                 )}
                 {activeSection.id === "projects" && (
-                  <ProjectForm 
-                    data={resumeData.project} 
+                  <ProjectForm
+                    data={resumeData.project}
                     onChange={(data) => dispatch(setResume({...resumeData, project: data}))}
                   />
                 )}
                 {activeSection.id === "certifications" && (
                   <CertificationForm
-                    data={resumeData.certification}
-                    onChange={(data) => dispatch(setResume({...resumeData, certification: data}))}
+                    data={resumeData.certifications}
+                    onChange={(data) => dispatch(setResume({...resumeData, certifications: data}))}
                   />
                 )}
                 {activeSection.id === "skills" && (
-                  <SkillsForm 
-                    data={resumeData.skills} 
+                  <SkillsForm
+                    data={resumeData.skills}
                     onChange={(data) => dispatch(setResume({...resumeData, skills: data}))}
                   />
                 )}
@@ -582,11 +600,11 @@ const ResumeBuilder = () => {
                   <ChevronLeft size={16} />
                   Previous
                 </button>
-                
+
                 <span className="text-sm text-gray-500">
                   {activeSectionIndex + 1} of {sections.length}
                 </span>
-                
+
                 <button
                   onClick={() => setActiveSectionIndex(Math.min(sections.length - 1, activeSectionIndex + 1))}
                   disabled={activeSectionIndex === sections.length - 1}
@@ -606,19 +624,19 @@ const ResumeBuilder = () => {
                    <div className="flex items-center justify-between mb-4">
                 <h2 className="text-lg font-semibold text-gray-900">Live Preview</h2>
                 <div className="flex items-center gap-2">
-                  <TemplateSelector 
-                    selectedTemplate={resumeData.template} 
+                  <TemplateSelector
+                    selectedTemplate={resumeData.template}
                     onChange={(template) => dispatch(setResume({...resumeData, template}))}
                   />
-                  <ColorPicker 
-                    selectedColor={resumeData.accent_color} 
+                  <ColorPicker
+                    selectedColor={resumeData.accent_color}
                     onChange={(color) => dispatch(setResume({...resumeData, accent_color: color}))}
                   />
                 </div>
               </div>
               </div>
             </div>
-            
+
             <div className="overflow-auto flex-1 bg-gray-50 p-4" style={{ height: 'calc(100vh - 200px)' }}>
               <div
                 className="mx-auto shadow-lg transition-all duration-300"
