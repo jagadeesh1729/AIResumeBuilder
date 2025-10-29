@@ -5,21 +5,22 @@ import MinimalTemplate from './templates/MinimalTemplate'
 import MinimalImageTemplate from './templates/MinimalImageTemplate'
 import TechnicalTemplate from './templates/TechnicalTemplate'
 
-const ResumePreview = ({data, template, accentColor, classes = "", exportLayout = false}) => {
+const ResumePreview = ({ data, template, accentColor, sections, classes = "", exportLayout = false }) => {
 
-    const renderTemplate = ()=>{
+    const renderTemplate = () => {
+        const props = { data, accentColor, sections }
         switch (template) {
             case "modern":
-                return <ModernTemplate data={data} accentColor={accentColor}/>;
+                return <ModernTemplate {...props} />;
             case "minimal":
-                return <MinimalTemplate data={data} accentColor={accentColor}/>;
+                return <MinimalTemplate {...props} />;
             case "minimal-image":
-                return <MinimalImageTemplate data={data} accentColor={accentColor}/>;
+                return <MinimalImageTemplate {...props} />;
             case "technical":
-                return <TechnicalTemplate data={data} accentColor={accentColor}/>;
+                return <TechnicalTemplate {...props} />;
             case "classic":
             default:
-                return <ClassicTemplate data={data} accentColor={accentColor}/>;
+                return <ClassicTemplate {...props} />;
         }
     }
 

@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { ArrowLeftIcon, Award, Briefcase, CheckCircle, ChevronLeft, ChevronRight, DownloadIcon, EyeIcon, FileText, FolderIcon, GraduationCap, Save, Share2Icon, Sparkles, User } from 'lucide-react'
+import { ArrowLeftIcon, Award, Briefcase, CheckCircle, ChevronLeft, ChevronRight, DownloadIcon, EyeIcon, FileText, FolderIcon, GraduationCap, GripVertical, Save, Share2Icon, Sparkles, User } from 'lucide-react'
+import { DragDropContext, Draggable, Droppable } from '@hello-pangea/dnd'
 import PersonalInfoForm from '../components/PersonalInfoForm'
 import ResumePreview from '../components/ResumePreview'
 import TemplateSelector from '../components/TemplateSelector'
@@ -44,7 +45,7 @@ const ResumeBuilder = () => {
   const [autoSaving, setAutoSaving] = useState(false)
   const [lastSaved, setLastSaved] = useState(null)
 
-  const sections = [
+  const initialSections = [
     { id: "personal", name: "Personal Info", icon: User },
     { id: "summary", name: "Summary", icon: FileText },
     { id: "experience", name: "Experience", icon: Briefcase },
@@ -54,7 +55,16 @@ const ResumeBuilder = () => {
     { id: "skills", name: "Skills", icon: Sparkles },
   ]
 
+  const sections = resumeData?.sections || initialSections
   const activeSection = sections[activeSectionIndex]
+
+  const handleDragEnd = (result) => {
+    if (!result.destination) return
+    const items = Array.from(resumeData.sections)
+    const [reorderedItem] = items.splice(result.source.index, 1)
+    items.splice(result.destination.index, 0, reorderedItem)
+    setResumeData({ ...resumeData, sections: items })
+  }
 
   const loadExistingResume = async () => {
     if (!resumeId) return;
@@ -484,33 +494,60 @@ const ResumeBuilder = () => {
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden flex flex-col">
             {/* Section Navigation */}
             <div className="border-b border-gray-200 p-4">
-             
-              
-              <div className="flex items-center gap-2 overflow-x-auto pb-2">
-                {sections.map((section, index) => {
-                  const Icon = section.icon
-                  const isActive = index === activeSectionIndex
-                  const isComplete = isSectionComplete(section.id)
-                  
-                  return (
-                    <button
-                      key={section.id}
-                      onClick={() => setActiveSectionIndex(index)}
-                      className={`flex items-center gap-2 px-3 py-2 rounded-lg whitespace-nowrap transition-all ${
-                        isActive 
-                          ? 'bg-blue-100 text-blue-700 border border-blue-200' 
-                          : 'text-gray-600 hover:bg-gray-100'
-                      }`}
-                    >
-                      <Icon size={16} />
-                      <span className="text-sm">{section.name}</span>
-                      {isComplete && (
-                        <CheckCircle size={14} className="text-green-500" />
-                      )}
-                    </button>
-                  )
-                })}
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-lg font-semibold text-gray-900">Resume Builder</h2>
+                <div className="flex items-center gap-2">
+                  <TemplateSelector 
+                    selectedTemplate={resumeData.template} 
+                    onChange={(template) => setResumeData({...resumeData, template})} 
+                  />
+                  <ColorPicker 
+                    selectedColor={resumeData.accent_color} 
+                    onChange={(color) => setResumeData({...resumeData, accent_color: color})} 
+                  />
+                </div>
               </div>
+              <DragDropContext onDragEnd={handleDragEnd}>
+                <Droppable droppableId="sections" direction="horizontal">
+                  {(provided) => (
+                    <div
+                      ref={provided.innerRef}
+                      {...provided.droppableProps}
+                      className="flex items-center gap-2 overflow-x-auto pb-2"
+                    >
+                      {sections.map((section, index) => {
+                        const Icon = section.icon
+                        const isActive = index === activeSectionIndex
+                        const isComplete = isSectionComplete(section.id)
+
+                        return (
+                          <Draggable key={section.id} draggableId={section.id} index={index}>
+                            {(provided) => (
+                              <div
+                                ref={provided.innerRef}
+                                {...provided.draggableProps}
+                                {...provided.dragHandleProps}
+                                onClick={() => setActiveSectionIndex(index)}
+                                className={`flex items-center gap-2 px-3 py-2 rounded-lg whitespace-nowrap transition-all cursor-pointer ${isActive
+                                  ? 'bg-blue-100 text-blue-700 border border-blue-200'
+                                  : 'text-gray-600 hover:bg-gray-100'
+                                  }`}
+                              >
+                                <Icon size={16} />
+                                <span className="text-sm">{section.name}</span>
+                                {isComplete && (
+                                  <CheckCircle size={14} className="text-green-500" />
+                                )}
+                              </div>
+                            )}
+                          </Draggable>
+                        )
+                      })}
+                      {provided.placeholder}
+                    </div>
+                  )}
+                </Droppable>
+              </DragDropContext>
             </div>
 
             {/* Form Content */}
@@ -628,6 +665,7 @@ const ResumeBuilder = () => {
                     data={resumeData} 
                     template={resumeData.template} 
                     accentColor={resumeData.accent_color}
+                    sections={resumeData.sections}
                     classes="w-full h-full"
                   />
                 </div>
