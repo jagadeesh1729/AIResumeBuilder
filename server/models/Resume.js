@@ -6,8 +6,6 @@ const ResumeSchema = new mongoose.Schema({
     public: { type: Boolean, default: false },
     template: { type: String, default: "classic" },
     accent_color: { type: String, default: "#3B82F6" },
-    professional_summary: { type: String, default: '' },
-    skills: [{ type: String }],
     personal_info: {
         image: {type: String, default: '' },
         full_name: {type: String, default: '' },
@@ -28,13 +26,6 @@ const ResumeSchema = new mongoose.Schema({
             is_current: { type: Boolean },
         }
     ],
-    project: [
-        {
-            name: { type: String },
-            type: { type: String },
-            description: { type: String },
-        }
-    ],
     education: [
         {
             institution: { type: String },
@@ -44,6 +35,7 @@ const ResumeSchema = new mongoose.Schema({
             gpa: { type: String },
         }
     ],
+    skills: [{ type: String }],
     certification: [
         {
             name: { type: String },

@@ -1,15 +1,18 @@
-import React from 'react'
-import ClassicTemplate from './templates/ClassicTemplate'
-import ModernTemplate from './templates/ModernTemplate'
-import MinimalTemplate from './templates/MinimalTemplate'
-import MinimalImageTemplate from './templates/MinimalImageTemplate'
-import TechnicalTemplate from './templates/TechnicalTemplate'
-import './ResumePreview.css'
+import React from 'react';
+import { useSelector } from 'react-redux';
+import ClassicTemplate from './templates/ClassicTemplate';
+import ModernTemplate from './templates/ModernTemplate';
+import MinimalTemplate from './templates/MinimalTemplate';
+import MinimalImageTemplate from './templates/MinimalImageTemplate';
+import TechnicalTemplate from './templates/TechnicalTemplate';
+import './ResumePreview.css';
 
-const ResumePreview = ({ data, template, accentColor, sections, classes = "", exportLayout = false }) => {
+const ResumePreview = ({ classes = "", exportLayout = false }) => {
+    const { resume, padding } = useSelector(state => state.resume);
+    const { template, accent_color: accentColor, sections } = resume;
 
     const renderTemplate = () => {
-        const props = { data, accentColor, sections }
+        const props = { data: resume, accentColor, sections };
         switch (template) {
             case "modern":
                 return <ModernTemplate {...props} />;
@@ -30,11 +33,11 @@ const ResumePreview = ({ data, template, accentColor, sections, classes = "", ex
       <div id="resume-preview" className={`print:shadow-none print:border-none ${classes}`}>
         {exportLayout ? (
           <div className="export-frame">
-            <div className="p-6">{renderTemplate()}</div>
+            <div style={{ padding }}>{renderTemplate()}</div>
           </div>
         ) : (
           <div className="preview-container">
-            <div className="p-6 md:p-8">{renderTemplate()}</div>
+            <div style={{ padding }} className="md:p-8">{renderTemplate()}</div>
           </div>
         )}
       </div>
@@ -42,4 +45,4 @@ const ResumePreview = ({ data, template, accentColor, sections, classes = "", ex
   )
 }
 
-export default ResumePreview
+export default ResumePreview;

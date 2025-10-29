@@ -59,16 +59,22 @@ const launchBrowser = async () => {
 
 export const exportDocx = async (req, res) => {
   try {
-    const { resume, template, accentColor } = req.body || {}
+    const { resume, template, accentColor, margin, padding } = req.body || {}
     ensureResume(resume)
 
     const templateName = resolveTemplate(resume, template)
     const accent = resolveAccent(resume, accentColor)
-    const html = generateResumeHtml(resume, templateName, accent)
+    const html = generateResumeHtml(resume, templateName, accent, padding)
     const buffer = await htmlToDocx(html, null, {
       table: { row: { cantSplit: true } },
       footer: false,
       pageNumber: false,
+      margins: {
+        top: margin || 720,
+        right: margin || 720,
+        bottom: margin || 720,
+        left: margin || 720,
+      }
     })
 
     const filename = buildFilename(resume, templateName, 'docx')
@@ -88,12 +94,12 @@ export const exportDocx = async (req, res) => {
 export const exportPdf = async (req, res) => {
   let browser
   try {
-    const { resume, template, accentColor } = req.body || {}
+    const { resume, template, accentColor, margin, padding } = req.body || {}
     ensureResume(resume)
 
     const templateName = resolveTemplate(resume, template)
     const accent = resolveAccent(resume, accentColor)
-    const html = generateResumeHtml(resume, templateName, accent)
+    const html = generateResumeHtml(resume, templateName, accent, padding)
 
     browser = await launchBrowser()
     const page = await browser.newPage()
@@ -102,10 +108,10 @@ export const exportPdf = async (req, res) => {
       format: 'Letter',
       printBackground: true,
       margin: {
-        top: '0.5in',
-        bottom: '0.5in',
-        left: '0.5in',
-        right: '0.5in',
+        top: margin || '0.5in',
+        bottom: margin || '0.5in',
+        left: margin || '0.5in',
+        right: margin || '0.5in',
       },
     })
 
@@ -130,4 +136,3 @@ export const exportPdf = async (req, res) => {
     }
   }
 }
-
