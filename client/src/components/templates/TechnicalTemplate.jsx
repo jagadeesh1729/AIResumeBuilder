@@ -10,9 +10,13 @@ const TechnicalTemplate = ({ data, accentColor, sections }) => {
 
   const formatDate = (dateStr) => {
     if (!dateStr) return "";
-    const [year, month] = String(dateStr).split("-");
-    const d = new Date(year, (month || 1) - 1, 1);
-    return d.toLocaleDateString("en-US", { year: "numeric", month: "short" });
+    try {
+        const [year, month] = String(dateStr).split("-");
+        const d = new Date(year, (month || 1) - 1, 1);
+        return d.toLocaleDateString("en-US", { year: "numeric", month: "short" });
+    } catch(e) {
+        return dateStr;
+    }
   };
 
   const rawSkills = Array.isArray(data?.skills) ? data.skills.filter(Boolean) : [];
@@ -83,60 +87,44 @@ const TechnicalTemplate = ({ data, accentColor, sections }) => {
   const displayCategories = useMemo(() => {
     const src = categories || fallbackCategories || {};
     const order = [
-      "Frontend",
-      "Backend",
-      "DevOps",
-      "Cloud",
-      "Data",
-      "Mobile",
-      "Testing",
-      "Databases ",
-      "Languages",
-      "Frameworks",
-      "Tools",
-      "Other",
+      "Frontend", "Backend", "DevOps", "Cloud", "Data", "Mobile",
+      "Testing", "Databases ", "Languages", "Frameworks", "Tools", "Other",
     ];
-    const rows = [];
-    order.forEach((k) => {
-      const list = src[k];
-      if (Array.isArray(list) && list.length) rows.push([k, list]);
-    });
-    Object.keys(src).forEach((k) => {
-      if (!order.includes(k)) {
-        const list = src[k];
-        if (Array.isArray(list) && list.length) rows.push([k, list]);
-      }
-    });
-    return rows;
+    return order
+        .map(k => [k, src[k]])
+        .filter(([, list]) => Array.isArray(list) && list.length)
+        .concat(
+            Object.entries(src).filter(([k]) => !order.includes(k))
+        );
   }, [categories, fallbackCategories]);
 
   const sectionComponents = {
-    summary: (
+    summary: data?.professional_summary && (
       <section key="summary" className="mb-6 break-inside-avoid">
-        <h2 className="text-sm font-semibold uppercase tracking-wide mb-3" style={{ color: accentColor }}>
+        <h2 className="text-sm font-bold uppercase tracking-wider mb-2" style={{ color: accentColor }}>
           Summary
         </h2>
-        <p className="text-sm text-gray-700 whitespace-pre-line leading-normal">
+        <p className="text-sm text-gray-700 whitespace-pre-line leading-relaxed">
           {data.professional_summary}
         </p>
       </section>
     ),
-    skills: (
+    skills: rawSkills.length > 0 && (
       <section key="skills" className="mb-6 break-inside-avoid">
-        <h2 className="text-sm font-semibold uppercase tracking-wide mb-3" style={{ color: accentColor }}>
-          Skills
+        <h2 className="text-sm font-bold uppercase tracking-wider mb-2" style={{ color: accentColor }}>
+          Technical Skills
         </h2>
         {loadingCats && (
           <div className="mt-1 text-xs text-gray-500">Categorizing skills…</div>
         )}
-        <table className="w-full text-xs sm:text-sm">
+        <table className="w-full text-xs sm:text-sm border-separate border-spacing-x-2 border-spacing-y-1">
           <tbody>
             {displayCategories.map(([cat, list]) => (
               <tr key={cat} className="align-top">
-                <th className="text-left font-semibold align-top whitespace-nowrap pr-4 py-1" style={{ color: accentColor }}>
+                <th className="text-left font-semibold align-top whitespace-nowrap pr-3 py-0.5" style={{ color: accentColor }}>
                   {cat}
                 </th>
-                <td className="py-1 text-gray-700 leading-normal">
+                <td className="py-0.5 text-gray-700 leading-normal">
                   {list.join(", ")}
                 </td>
               </tr>
@@ -145,88 +133,88 @@ const TechnicalTemplate = ({ data, accentColor, sections }) => {
         </table>
       </section>
     ),
-    education: (
+    education: data?.education?.length > 0 && (
       <section key="education" className="mb-6 break-inside-avoid">
-        <h2 className="text-sm font-semibold uppercase tracking-wide mb-3" style={{ color: accentColor }}>
+        <h2 className="text-sm font-bold uppercase tracking-wider mb-2" style={{ color: accentColor }}>
           Education
         </h2>
         <div className="space-y-3">
-          {data.education.map((edu, idx) => (
-            <div key={idx} className="border-l-2 pl-3 break-inside-avoid" style={{ borderColor: accentColor }}>
-              <div className="flex flex-wrap items-baseline justify-between gap-2">
+          {data.education.map((edu) => (
+            <div key={edu.id} className="break-inside-avoid">
+              <div className="flex flex-wrap items-baseline justify-between gap-x-2">
                 <div>
                   <h3 className="text-base font-semibold text-gray-900">
-                    {edu.degree} {edu.field ? `in ${edu.field}` : ""}
+                    {edu.degree} {edu.field ? <span className="font-medium text-gray-700">in {edu.field}</span> : ""}
                   </h3>
-                  <p className="text-sm" style={{ color: accentColor }}>{edu.institution}</p>
+                  <p className="text-sm font-medium text-gray-800">{edu.institution}</p>
                 </div>
-                <div className="text-xs text-gray-600">{formatDate(edu.graduation_date)}</div>
+                <p className="text-xs font-mono text-gray-600">{formatDate(edu.graduation_date)}</p>
               </div>
               {edu.gpa && (
-                <div className="mt-1 text-xs text-gray-700">GPA: {edu.gpa}</div>
+                <p className="mt-1 text-xs text-gray-600">GPA: {edu.gpa}</p>
               )}
             </div>
           ))}
         </div>
       </section>
     ),
-    certifications: (
+    certifications: data?.certifications?.length > 0 && (
       <section key="certifications" className="mb-6 break-inside-avoid">
-        <h2 className="text-sm font-semibold uppercase tracking-wide mb-3" style={{ color: accentColor }}>
+        <h2 className="text-sm font-bold uppercase tracking-wider mb-2" style={{ color: accentColor }}>
           Certifications
         </h2>
         <div className="space-y-3">
-          {data.certifications.map((cert, idx) => (
-            <div key={idx} className="border-l-2 pl-3 break-inside-avoid" style={{ borderColor: accentColor }}>
-              <div className="flex flex-wrap items-baseline justify-between gap-2">
+          {data.certifications.map((cert) => (
+            <div key={cert.id} className="break-inside-avoid">
+              <div className="flex flex-wrap items-baseline justify-between gap-x-2">
                 <div>
                   <h3 className="text-base font-semibold text-gray-900">{cert.name}</h3>
-                  <p className="text-sm" style={{ color: accentColor }}>{cert.organization}</p>
+                  <p className="text-sm font-medium text-gray-800">{cert.organization}</p>
                 </div>
-                <div className="text-xs text-gray-600">{formatDate(cert.date)}</div>
+                <p className="text-xs font-mono text-gray-600">{formatDate(cert.date)}</p>
               </div>
             </div>
           ))}
         </div>
       </section>
     ),
-    projects: (
+    projects: data?.project?.length > 0 && (
       <section key="projects" className="mb-6 break-inside-avoid">
-        <h2 className="text-sm font-semibold uppercase tracking-wide mb-3" style={{ color: accentColor }}>
+        <h2 className="text-sm font-bold uppercase tracking-wider mb-2" style={{ color: accentColor }}>
           Projects
         </h2>
         <div className="space-y-4">
-          {data.project.map((p, idx) => (
-            <div key={idx} className="border-l-2 pl-3 break-inside-avoid" style={{ borderColor: accentColor }}>
-              <h3 className="text-base font-medium text-gray-900">{p.name}</h3>
-              {p.type && <p className="text-xs" style={{ color: accentColor }}>{p.type}</p>}
-              {p.description && (
-                <div className="mt-1 text-sm text-gray-700 whitespace-pre-line leading-normal">{p.description}</div>
-              )}
+          {data.project.map((p) => (
+            <div key={p.id} className="break-inside-avoid">
+                <h3 className="text-base font-semibold text-gray-900">{p.name}</h3>
+                {p.type && <p className="text-xs font-medium uppercase tracking-wide" style={{ color: accentColor }}>{p.type}</p>}
+                {p.description && (
+                    <p className="mt-1 text-sm text-gray-700 leading-relaxed">{p.description}</p>
+                )}
             </div>
           ))}
         </div>
       </section>
     ),
-    experience: (
+    experience: data?.experience?.length > 0 && (
       <section key="experience" className="break-inside-avoid">
-        <h2 className="text-sm font-semibold uppercase tracking-wide mb-3" style={{ color: accentColor }}>
+        <h2 className="text-sm font-bold uppercase tracking-wider mb-2" style={{ color: accentColor }}>
           Experience
         </h2>
         <div className="space-y-4">
-          {data.experience.map((exp, idx) => (
-            <div key={idx} className="border-l-2 pl-3 break-inside-avoid" style={{ borderColor: accentColor }}>
-              <div className="flex flex-wrap items-baseline justify-between gap-2">
+          {data.experience.map((exp) => (
+            <div key={exp.id} className="break-inside-avoid">
+              <div className="flex flex-wrap items-baseline justify-between gap-x-2">
                 <div>
-                  <h3 className="text-lg font-medium text-gray-900">{exp.position}</h3>
-                  <p className="text-sm" style={{ color: accentColor }}>{exp.company}</p>
+                  <h3 className="text-lg font-semibold text-gray-900">{exp.position}</h3>
+                  <p className="text-sm font-medium" style={{ color: accentColor }}>{exp.company}</p>
                 </div>
-                <div className="text-xs text-gray-600 bg-gray-100 px-2 py-1 rounded">
+                <p className="text-xs font-mono text-gray-600">
                   {formatDate(exp.start_date)} - {exp.is_current ? "Present" : formatDate(exp.end_date)}
-                </div>
+                </p>
               </div>
               {exp.description && (
-                <div className="mt-2 text-sm text-gray-700 whitespace-pre-line leading-normal">{exp.description}</div>
+                <div className="mt-2 text-sm text-gray-700 whitespace-pre-line leading-relaxed" dangerouslySetInnerHTML={{ __html: exp.description }} />
               )}
             </div>
           ))}
@@ -236,21 +224,19 @@ const TechnicalTemplate = ({ data, accentColor, sections }) => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto bg-white text-gray-800 text-sm font-sans">
-      {/* Header */}
-      <header className="px-6 pt-6 pb-4 border-b-2" style={{ borderColor: accentColor }}>
-        <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight">
+    <div className="bg-white text-gray-800 text-sm font-sans">
+      <header className="p-4 border-b-2" style={{ borderColor: accentColor }}>
+        <h1 className="text-3xl font-bold tracking-tight text-center">
           {data.personal_info?.full_name || "Your Name"}
         </h1>
-        <div className="mt-2">
-          <HeaderContact personal={data.personal_info} className="text-xs sm:text-sm text-gray-700" />
+        <div className="mt-2 flex justify-center flex-wrap gap-x-4">
+          <HeaderContact personal={data.personal_info} accentColor={accentColor} className="text-xs text-gray-700" />
         </div>
       </header>
 
-      {/* Body */}
-      <div className="p-6">
-        {sections?.map(section => sectionComponents[section.id])}
-      </div>
+      <main className="p-4 space-y-4">
+        {sections?.map(section => section.id in sectionComponents && sectionComponents[section.id])}
+      </main>
     </div>
   );
 };

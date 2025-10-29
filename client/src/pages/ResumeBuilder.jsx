@@ -37,7 +37,6 @@ const ResumeBuilder = () => {
   })
 
   const [activeSectionIndex, setActiveSectionIndex] = useState(0)
-  const [removeBackground, setRemoveBackground] = useState(false)
   const [exportOpen, setExportOpen] = useState(false)
   const [previewOpen, setPreviewOpen] = useState(false)
   const exportRef = useRef(null)
@@ -627,7 +626,7 @@ const ResumeBuilder = () => {
           </div>
 
           {/* Right Panel - Enhanced Preview */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-.200 overflow-hidden">
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
             <div className="border-b border-gray-200 p-4">
               <div className="flex items-center justify-between">
                    <div className="flex items-center justify-between mb-4">
@@ -646,29 +645,24 @@ const ResumeBuilder = () => {
               </div>
             </div>
             
-            <div className="overflow-auto flex-1 bg-gray-50" style={{ height: 'calc(100vh - 200px)' }}>
-              <div className="p-4">
-                <div 
-                  className={`mx-auto shadow-lg transition-all duration-300 ${
-                    removeBackground ? 'shadow-none' : 'shadow-lg'
-                  }`}
-                  style={{ 
-                    width: '210mm',
-                    minHeight: '297mm',
-                    maxWidth: '100%',
-                    transform: 'scale(0.65)',
-                    transformOrigin: 'top center',
-                    marginBottom: '-35%'
-                  }}
-                >
-                  <ResumePreview 
-                    data={resumeData} 
-                    template={resumeData.template} 
-                    accentColor={resumeData.accent_color}
-                    sections={resumeData.sections}
-                    classes="w-full h-full"
-                  />
-                </div>
+            <div className="overflow-auto flex-1 bg-gray-50 p-4" style={{ height: 'calc(100vh - 200px)' }}>
+              <div
+                className="mx-auto shadow-lg transition-all duration-300"
+                style={{
+                  width: '210mm',
+                  minHeight: '297mm',
+                  transform: 'scale(0.65)',
+                  transformOrigin: 'top center',
+                  marginBottom: '-35.5%', // Adjust this to compensate for scale
+                }}
+              >
+                <ResumePreview
+                  data={resumeData}
+                  template={resumeData.template}
+                  accentColor={resumeData.accent_color}
+                  sections={resumeData.sections}
+                  classes="w-full h-full"
+                />
               </div>
             </div>
           </div>
