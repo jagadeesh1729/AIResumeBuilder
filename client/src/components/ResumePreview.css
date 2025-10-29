@@ -32,6 +32,14 @@
     print-color-adjust: exact;
   }
 
+  .section, .item {
+    break-inside: avoid-page;
+  }
+
+  h2.section-title, .section h2 {
+    break-after: avoid-page;
+  }
+
   body * {
     visibility: hidden;
   }

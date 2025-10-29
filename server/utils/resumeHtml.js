@@ -212,7 +212,7 @@ const resolveSectionOrder = (resumeSections, sectionData) => {
 
 const buildContactHtml = (contactList) => {
   if (!Array.isArray(contactList) || !contactList.length) return ''
-  return `<div class="contact-line">${contactList
+  return `<div class="contact-line" style="display: flex; justify-content: center; flex-wrap: wrap; column-gap: 1rem; row-gap: 0.25rem;">${contactList
     .map((item) => `<span>${item}</span>`)
     .join('<span class="separator">•</span>')}</div>`
 }
@@ -224,14 +224,14 @@ const renderClassic = (model, accent) => {
     summary: () =>
       sections.summary
         ? `<section class="section">
-            <h2 class="section-title">${SECTION_LABELS.summary}</h2>
+            <h2 class="section-title" style="font-size: 1.25rem; line-height: 1.75rem; font-weight: 700; margin-bottom: 0.5rem; text-transform: uppercase;">${SECTION_LABELS.summary}</h2>
             <p class="section-text">${sections.summary}</p>
           </section>`
         : '',
     experience: () =>
       sections.experience.length
         ? `<section class="section">
-            <h2 class="section-title">${SECTION_LABELS.experience}</h2>
+            <h2 class="section-title" style="font-size: 1.25rem; line-height: 1.75rem; font-weight: 700; margin-bottom: 0.5rem; text-transform: uppercase;">${SECTION_LABELS.experience}</h2>
             ${sections.experience
               .map(
                 (exp) => `<div class="item">
@@ -257,7 +257,7 @@ const renderClassic = (model, accent) => {
     education: () =>
       sections.education.length
         ? `<section class="section">
-            <h2 class="section-title">${SECTION_LABELS.education}</h2>
+            <h2 class="section-title" style="font-size: 1.25rem; line-height: 1.75rem; font-weight: 700; margin-bottom: 0.5rem; text-transform: uppercase;">${SECTION_LABELS.education}</h2>
             ${sections.education
               .map(
                 (edu) => `<div class="item narrower">
@@ -288,7 +288,7 @@ const renderClassic = (model, accent) => {
     projects: () =>
       sections.projects.length
         ? `<section class="section">
-            <h2 class="section-title">${SECTION_LABELS.projects}</h2>
+            <h2 class="section-title" style="font-size: 1.25rem; line-height: 1.75rem; font-weight: 700; margin-bottom: 0.5rem; text-transform: uppercase;">${SECTION_LABELS.projects}</h2>
             ${sections.projects
               .map(
                 (proj) => `<div class="item">
@@ -307,7 +307,7 @@ const renderClassic = (model, accent) => {
     certifications: () =>
       sections.certifications.length
         ? `<section class="section">
-            <h2 class="section-title">${SECTION_LABELS.certifications}</h2>
+            <h2 class="section-title" style="font-size: 1.25rem; line-height: 1.75rem; font-weight: 700; margin-bottom: 0.5rem; text-transform: uppercase;">${SECTION_LABELS.certifications}</h2>
             <ul class="list-unstyled">
               ${sections.certifications
                 .map(
@@ -332,7 +332,7 @@ const renderClassic = (model, accent) => {
     skills: () =>
       sections.skills.length
         ? `<section class="section">
-            <h2 class="section-title">${SECTION_LABELS.skills}</h2>
+            <h2 class="section-title" style="font-size: 1.25rem; line-height: 1.75rem; font-weight: 700; margin-bottom: 0.5rem; text-transform: uppercase;">${SECTION_LABELS.skills}</h2>
             <ul class="skills-grid">
               ${sections.skills
                 .map((skill) => `<li class="pill">${skill}</li>`)
@@ -345,8 +345,8 @@ const renderClassic = (model, accent) => {
   const sectionsHtml = order.map((id) => sectionRenderers[id]?.() || '').join('')
 
   return `<div class="resume-page classic-template" data-accent="${accent}">
-    <header class="resume-header">
-      <h1>${personal.fullName}</h1>
+    <header class="resume-header" style="text-align: center; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom-width: 2px;">
+      <h1 style="font-size: 2.25rem; line-height: 2.5rem; font-weight: 700; margin-bottom: 0.25rem;">${personal.fullName}</h1>
       ${
         personal.headline
           ? `<p class="headline">${personal.headline}</p>`
@@ -919,10 +919,10 @@ const getTemplateStyles = (template) => {
     .headline{margin-top:6px;font-size:15px;color:#334155}
     .contact-line{margin-top:10px;display:flex;flex-wrap:wrap;gap:10px;font-size:13px;color:#475569}
     .separator{opacity:0.5}
-    .section{margin-bottom:32px;break-inside:avoid}
-    .section-title{font-size:13px;letter-spacing:0.18em;text-transform:uppercase;font-weight:600;margin-bottom:12px;color:var(--accent-color,#3FA9F5)}
+    .section{margin-bottom:32px;break-inside:avoid-page}
+    .section-title{font-size:13px;letter-spacing:0.18em;text-transform:uppercase;font-weight:600;margin-bottom:12px;color:var(--accent-color,#3FA9F5); break-after: avoid-page;}
     .section-text{font-size:14px;line-height:1.6;color:#1f2937}
-    .item{margin-bottom:18px;padding-left:16px;border-left:2px solid rgba(15,23,42,0.08)}
+    .item{margin-bottom:18px;padding-left:16px;border-left:2px solid rgba(15,23,42,0.08); break-inside: avoid-page;}
     .item-header{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:4px}
     .item-title{margin:0;font-size:16px;font-weight:600;color:#0f172a}
     .item-subtitle{margin:2px 0;font-size:14px;font-weight:500;color:var(--accent-color,#3FA9F5)}
