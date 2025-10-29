@@ -26,7 +26,7 @@ const ClassicTemplate = ({ data, accentColor, sections }) => {
                 </h2>
                 <div className="space-y-4">
                     {data.experience.map((exp, index) => (
-                        <div key={index} className="border-l-2 pl-4" style={{ borderColor: accentColor }}>
+                        <div key={index} className="border-l-2 pl-4 avoid-break" style={{ borderColor: accentColor }}>
                             <div className="flex justify-between items-start mb-1">
                                 <div>
                                     <h3 className="font-semibold text-base text-gray-900">{exp.position}</h3>
@@ -53,7 +53,7 @@ const ClassicTemplate = ({ data, accentColor, sections }) => {
                 </h2>
                 <div className="space-y-4">
                     {data.project.map((proj, index) => (
-                        <div key={index} className="border-l-2 pl-4" style={{ borderColor: accentColor }}>
+                        <div key={index} className="border-l-2 pl-4 avoid-break" style={{ borderColor: accentColor }}>
                             <h3 className="font-semibold text-base text-gray-900">{proj.name}</h3>
                             {proj.type && <p className="text-xs text-gray-600 font-medium">{proj.type}</p>}
                             <p className="text-gray-700 leading-normal text-sm">{proj.description}</p>
@@ -69,7 +69,7 @@ const ClassicTemplate = ({ data, accentColor, sections }) => {
                 </h2>
                 <div className="space-y-3">
                     {data.certifications.map((cert, index) => (
-                        <div key={index} className="flex justify-between items-start">
+                        <div key={index} className="flex justify-between items-start avoid-break">
                             <div>
                                 <h3 className="font-semibold text-base text-gray-900">{cert.name}</h3>
                                 <p className="text-gray-700">{cert.organization}</p>
@@ -89,7 +89,7 @@ const ClassicTemplate = ({ data, accentColor, sections }) => {
                 </h2>
                 <div className="space-y-3">
                     {data.education.map((edu, index) => (
-                        <div key={index} className="flex justify-between items-start">
+                        <div key={index} className="flex justify-between items-start avoid-break">
                             <div>
                                 <h3 className="font-semibold text-base text-gray-900">
                                     {edu.degree} {edu.field && `in ${edu.field}`}

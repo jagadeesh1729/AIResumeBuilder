@@ -44,6 +44,13 @@ const ResumeSchema = new mongoose.Schema({
             gpa: { type: String },
         }
     ],
+    certification: [
+        {
+            name: { type: String },
+            issuer: { type: String },
+            issue_date: { type: String },
+        }
+    ]
 }, {timestamps: true, minimize: false})
 
 const Resume = mongoose.model('Resume', ResumeSchema)

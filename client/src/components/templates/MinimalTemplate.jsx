@@ -25,7 +25,7 @@ const MinimalTemplate = ({ data, accentColor, sections }) => {
                 </h2>
                 <div className="space-y-5">
                     {data.experience.map((exp, index) => (
-                        <div key={index}>
+                        <div key={index} className="avoid-break">
                             <div className="flex justify-between items-baseline mb-1">
                                 <h3 className="text-base font-medium">{exp.position}</h3>
                                 <span className="text-xs text-gray-500">
@@ -50,7 +50,7 @@ const MinimalTemplate = ({ data, accentColor, sections }) => {
                 </h2>
                 <div className="space-y-4">
                     {data.project.map((proj, index) => (
-                        <div key={index}>
+                        <div key={index} className="avoid-break">
                             <h3 className="text-base font-medium">{proj.name}</h3>
                             {proj.type && <p className="text-gray-600 mb-1 text-xs">{proj.type}</p>}
                             <p className="text-gray-700 leading-normal text-sm">{proj.description}</p>
@@ -66,7 +66,7 @@ const MinimalTemplate = ({ data, accentColor, sections }) => {
                 </h2>
                 <div className="space-y-3">
                     {data.certifications.map((cert, index) => (
-                        <div key={index} className="flex justify-between items-baseline">
+                        <div key={index} className="flex justify-between items-baseline avoid-break">
                             <div>
                                 <h3 className="font-medium text-base">{cert.name}</h3>
                                 <p className="text-gray-600 text-sm">{cert.organization}</p>
@@ -86,7 +86,7 @@ const MinimalTemplate = ({ data, accentColor, sections }) => {
                 </h2>
                 <div className="space-y-3">
                     {data.education.map((edu, index) => (
-                        <div key={index} className="flex justify-between items-baseline">
+                        <div key={index} className="flex justify-between items-baseline avoid-break">
                             <div>
                                 <h3 className="font-medium text-base">
                                     {edu.degree} {edu.field && `in ${edu.field}`}

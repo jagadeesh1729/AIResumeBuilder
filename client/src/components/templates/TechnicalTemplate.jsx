@@ -152,7 +152,7 @@ const TechnicalTemplate = ({ data, accentColor, sections }) => {
         </h2>
         <div className="space-y-3">
           {data.education.map((edu, idx) => (
-            <div key={idx} className="border-l-2 pl-3 break-inside-avoid" style={{ borderColor: accentColor }}>
+            <div key={idx} className="border-l-2 pl-3 break-inside-avoid avoid-break" style={{ borderColor: accentColor }}>
               <div className="flex flex-wrap items-baseline justify-between gap-2">
                 <div>
                   <h3 className="text-base font-semibold text-gray-900">
@@ -177,7 +177,7 @@ const TechnicalTemplate = ({ data, accentColor, sections }) => {
         </h2>
         <div className="space-y-3">
           {data.certifications.map((cert, idx) => (
-            <div key={idx} className="border-l-2 pl-3 break-inside-avoid" style={{ borderColor: accentColor }}>
+            <div key={idx} className="border-l-2 pl-3 break-inside-avoid avoid-break" style={{ borderColor: accentColor }}>
               <div className="flex flex-wrap items-baseline justify-between gap-2">
                 <div>
                   <h3 className="text-base font-semibold text-gray-900">{cert.name}</h3>
@@ -197,7 +197,7 @@ const TechnicalTemplate = ({ data, accentColor, sections }) => {
         </h2>
         <div className="space-y-4">
           {data.project.map((p, idx) => (
-            <div key={idx} className="border-l-2 pl-3 break-inside-avoid" style={{ borderColor: accentColor }}>
+            <div key={idx} className="border-l-2 pl-3 break-inside-avoid avoid-break" style={{ borderColor: accentColor }}>
               <h3 className="text-base font-medium text-gray-900">{p.name}</h3>
               {p.type && <p className="text-xs" style={{ color: accentColor }}>{p.type}</p>}
               {p.description && (
@@ -215,7 +215,7 @@ const TechnicalTemplate = ({ data, accentColor, sections }) => {
         </h2>
         <div className="space-y-4">
           {data.experience.map((exp, idx) => (
-            <div key={idx} className="border-l-2 pl-3 break-inside-avoid" style={{ borderColor: accentColor }}>
+            <div key={idx} className="border-l-2 pl-3 break-inside-avoid avoid-break" style={{ borderColor: accentColor }}>
               <div className="flex flex-wrap items-baseline justify-between gap-2">
                 <div>
                   <h3 className="text-lg font-medium text-gray-900">{exp.position}</h3>

@@ -20,7 +20,7 @@ const Hero = () => {
         <header className="z-50 w-full py-4 px-6 md:px-16 lg:px-24 xl:px-40 text-sm">
           <nav className="flex items-center justify-between">
             <a href="/" aria-label="Resume Builder home" className="inline-flex items-center">
-              <img src="/jamicajobZ.png" alt="Resume Builder logo" className="h-12 md:h-14 xl:h-32 w-auto"/>
+              <img src="/resume_logo.jpg" alt="Resume Builder logo" className="h-12 md:h-14 xl:h-32 w-auto"/>
             </a>
 
             <ul className="hidden md:flex items-center gap-8 text-slate-800">

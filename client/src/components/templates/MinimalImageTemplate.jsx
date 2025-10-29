@@ -29,7 +29,7 @@ const MinimalImageTemplate = ({ data, accentColor, sections }) => {
                 </h2>
                 <div className="space-y-5">
                     {data.experience.map((exp, index) => (
-                        <div key={index}>
+                        <div key={index} className="avoid-break">
                             <div className="flex justify-between items-center mb-1">
                                 <h3 className="font-semibold text-base text-zinc-900">
                                     {exp.position}
@@ -60,7 +60,7 @@ const MinimalImageTemplate = ({ data, accentColor, sections }) => {
                 </h2>
                 <div className="space-y-4">
                     {data.project.map((project, index) => (
-                        <div key={index}>
+                        <div key={index} className="avoid-break">
                             <h3 className="text-base font-medium text-zinc-800">{project.name}</h3>
                             <p className="text-xs mb-1" style={{ color: accentColor }}>
                                 {project.type}
@@ -84,7 +84,7 @@ const MinimalImageTemplate = ({ data, accentColor, sections }) => {
                 </h2>
                 <div className="space-y-3 text-xs">
                     {data.education.map((edu, index) => (
-                        <div key={index}>
+                        <div key={index} className="avoid-break">
                             <p className="font-semibold uppercase text-sm">{edu.degree}</p>
                             <p className="text-zinc-600">{edu.institution}</p>
                             <p className="text-zinc-500">
@@ -114,7 +114,7 @@ const MinimalImageTemplate = ({ data, accentColor, sections }) => {
                 </h2>
                 <div className="space-y-3 text-xs">
                     {data.certifications.map((cert, index) => (
-                        <div key={index}>
+                        <div key={index} className="avoid-break">
                             <p className="font-semibold uppercase text-sm">{cert.name}</p>
                             <p className="text-zinc-600">{cert.organization}</p>
                             <p className="text-zinc-500">

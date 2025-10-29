@@ -34,7 +34,7 @@ const Navbar = () => {
     <header className='shadow-sm bg-white sticky top-0 z-50'>
       <nav className='flex items-center justify-between max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 text-slate-800'>
         <Link to='/'>
-          <img src="/jamicajobZ.png" alt="logo" className="h-12 xl:h-24 w-auto" />
+          <img src="/resume_logo.jpg" alt="logo" className="h-12 xl:h-24 w-auto" />
         </Link>
         <div className='relative' ref={menuRef}>
           <button

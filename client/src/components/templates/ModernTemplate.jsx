@@ -24,9 +24,9 @@ const ModernTemplate = ({ data, accentColor, sections }) => {
 				<h2 className="text-xl sm:text-2xl font-light mb-4 pb-2 border-b border-gray-200">
 					Experience
 				</h2>
-				<div className="space-y-5">
-					{data.experience.map((exp, index) => (
-						<div key={index} className="relative pl-5 border-l-2 border-gray-200">
+                <div className="space-y-5">
+                    {data.experience.map((exp, index) => (
+                        <div key={index} className="relative pl-5 border-l-2 border-gray-200 avoid-break">
 							<div className="flex justify-between items-start mb-1">
 								<div>
 									<h3 className="text-lg font-medium text-gray-900">{exp.position}</h3>
@@ -51,9 +51,9 @@ const ModernTemplate = ({ data, accentColor, sections }) => {
 				<h2 className="text-xl sm:text-2xl font-light mb-3 pb-2 border-b border-gray-200">
 					Projects
 				</h2>
-				<div className="space-y-5">
-					{data.project.map((p, index) => (
-						<div key={index} className="relative pl-5 border-l-2" style={{ borderColor: accentColor }}>
+                <div className="space-y-5">
+                    {data.project.map((p, index) => (
+                        <div key={index} className="relative pl-5 border-l-2 avoid-break" style={{ borderColor: accentColor }}>
 							<h3 className="text-base font-medium text-gray-900">{p.name}</h3>
 							{p.type && <p className="text-xs font-medium" style={{ color: accentColor }}>{p.type}</p>}
 							{p.description && (
@@ -71,9 +71,9 @@ const ModernTemplate = ({ data, accentColor, sections }) => {
 				<h2 className="text-xl sm:text-2xl font-light mb-3 pb-2 border-b border-gray-200">
 					Certifications
 				</h2>
-				<div className="space-y-3">
-					{data.certifications.map((cert, index) => (
-						<div key={index}>
+                <div className="space-y-3">
+                    {data.certifications.map((cert, index) => (
+                        <div key={index} className="avoid-break">
 							<h3 className="font-semibold text-base text-gray-900">{cert.name}</h3>
 							<p className="text-sm" style={{ color: accentColor }}>{cert.organization}</p>
 							<div className="flex justify-between items-center text-xs text-gray-600">
@@ -89,9 +89,9 @@ const ModernTemplate = ({ data, accentColor, sections }) => {
 				<h2 className="text-xl sm:text-2xl font-light mb-3 pb-2 border-b border-gray-200">
 					Education
 				</h2>
-				<div className="space-y-3">
-					{data.education.map((edu, index) => (
-						<div key={index}>
+                <div className="space-y-3">
+                    {data.education.map((edu, index) => (
+                        <div key={index} className="avoid-break">
 							<h3 className="font-semibold text-base text-gray-900">
 								{edu.degree} {edu.field && `in ${edu.field}`}
 							</h3>

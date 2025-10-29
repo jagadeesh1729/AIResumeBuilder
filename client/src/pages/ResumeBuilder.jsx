@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { ArrowLeftIcon, Award, Briefcase, CheckCircle, ChevronLeft, ChevronRight, DownloadIcon, EyeIcon, FileText, FolderIcon, GraduationCap, GripVertical, Save, Share2Icon, Sparkles, User } from 'lucide-react'
-import { DragDropContext, Draggable, Droppable } from '@hello-pangea/dnd'
+import { DragDropContext, Draggable, Droppable } from "@hello-pangea/dnd"
 import PersonalInfoForm from '../components/PersonalInfoForm'
 import ResumePreview from '../components/ResumePreview'
 import TemplateSelector from '../components/TemplateSelector'
@@ -60,10 +60,15 @@ const ResumeBuilder = () => {
 
   const handleDragEnd = (result) => {
     if (!result.destination) return
-    const items = Array.from(resumeData.sections)
+    const items = Array.from(sections)
     const [reorderedItem] = items.splice(result.source.index, 1)
     items.splice(result.destination.index, 0, reorderedItem)
+    const currentId = activeSection?.id
     setResumeData({ ...resumeData, sections: items })
+    if (currentId) {
+      const nextIndex = items.findIndex(s => s.id === currentId)
+      if (nextIndex >= 0) setActiveSectionIndex(nextIndex)
+    }
   }
 
   const loadExistingResume = async () => {
@@ -81,6 +86,7 @@ const ResumeBuilder = () => {
           project: data.resume.project || [],
           skills: data.resume.skills || [],
           certifications: data.resume.certifications || [],
+          sections: Array.isArray(data.resume.sections) && data.resume.sections.length ? data.resume.sections : (prev.sections || initialSections),
           template: data.resume.template || prev.template || "classic",
           accent_color: data.resume.accent_color || prev.accent_color || "#3FA9F5",
           public: typeof data.resume.public === 'boolean' ? data.resume.public : (prev.public ?? false)
@@ -494,21 +500,12 @@ const ResumeBuilder = () => {
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden flex flex-col">
             {/* Section Navigation */}
             <div className="border-b border-gray-200 p-4">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg font-semibold text-gray-900">Resume Builder</h2>
-                <div className="flex items-center gap-2">
-                  <TemplateSelector 
-                    selectedTemplate={resumeData.template} 
-                    onChange={(template) => setResumeData({...resumeData, template})} 
-                  />
-                  <ColorPicker 
-                    selectedColor={resumeData.accent_color} 
-                    onChange={(color) => setResumeData({...resumeData, accent_color: color})} 
-                  />
-                </div>
+              <div className="text-sm text-gray-500 mb-2 flex items-center gap-2">
+                <GripVertical size={14} className="text-gray-400" />
+                <span role="img" aria-label="drag">↔️</span> Drag and drop sections to reorder them in your resume
               </div>
               <DragDropContext onDragEnd={handleDragEnd}>
-                <Droppable droppableId="sections" direction="horizontal">
+                <Droppable droppableId="section-tabs" direction="horizontal">
                   {(provided) => (
                     <div
                       ref={provided.innerRef}
@@ -519,25 +516,35 @@ const ResumeBuilder = () => {
                         const Icon = section.icon
                         const isActive = index === activeSectionIndex
                         const isComplete = isSectionComplete(section.id)
-
                         return (
                           <Draggable key={section.id} draggableId={section.id} index={index}>
-                            {(provided) => (
+                            {(dragProvided) => (
                               <div
-                                ref={provided.innerRef}
-                                {...provided.draggableProps}
-                                {...provided.dragHandleProps}
-                                onClick={() => setActiveSectionIndex(index)}
-                                className={`flex items-center gap-2 px-3 py-2 rounded-lg whitespace-nowrap transition-all cursor-pointer ${isActive
-                                  ? 'bg-blue-100 text-blue-700 border border-blue-200'
-                                  : 'text-gray-600 hover:bg-gray-100'
-                                  }`}
+                                ref={dragProvided.innerRef}
+                                {...dragProvided.draggableProps}
+                                className="flex items-center"
                               >
-                                <Icon size={16} />
-                                <span className="text-sm">{section.name}</span>
-                                {isComplete && (
-                                  <CheckCircle size={14} className="text-green-500" />
-                                )}
+                                <button
+                                  onClick={() => setActiveSectionIndex(index)}
+                                  className={`flex items-center gap-2 px-3 py-2 rounded-lg whitespace-nowrap transition-all ${
+                                    isActive 
+                                      ? 'bg-blue-100 text-blue-700 border border-blue-200' 
+                                      : 'text-gray-600 hover:bg-gray-100'
+                                  }`}
+                                >
+                                  <Icon size={16} />
+                                  <span className="text-sm">{section.name}</span>
+                                  {isComplete && (
+                                    <CheckCircle size={14} className="text-green-500" />
+                                  )}
+                                </button>
+                                <span
+                                  {...dragProvided.dragHandleProps}
+                                  className="px-1 cursor-grab text-gray-400 hover:text-gray-600 select-none"
+                                  title="Drag to reorder"
+                                >
+                                  <GripVertical size={16} />
+                                </span>
                               </div>
                             )}
                           </Draggable>
@@ -627,31 +634,29 @@ const ResumeBuilder = () => {
           </div>
 
           {/* Right Panel - Enhanced Preview */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-.200 overflow-hidden">
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
             <div className="border-b border-gray-200 p-4">
-              <div className="flex items-center justify-between">
-                   <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg font-semibold text-gray-900">Live Preview</h2>
-                <div className="flex items-center gap-2">
-                  <TemplateSelector 
-                    selectedTemplate={resumeData.template} 
-                    onChange={(template) => setResumeData({...resumeData, template})} 
-                  />
-                  <ColorPicker 
-                    selectedColor={resumeData.accent_color} 
-                    onChange={(color) => setResumeData({...resumeData, accent_color: color})} 
-                  />
+              <div className="flex items-center ">
+                <div className="flex items-center   w-full">
+                  <h2 className="text-lg font-semibold text-gray-900 mr-14">Live Preview</h2>
+                  <div className="flex items-center justify-center gap-4">
+                    <TemplateSelector 
+                      selectedTemplate={resumeData.template} 
+                      onChange={(template) => setResumeData({...resumeData, template})} 
+                    />
+                    <ColorPicker 
+                      selectedColor={resumeData.accent_color} 
+                      onChange={(color) => setResumeData({...resumeData, accent_color: color})} 
+                    />
+                  </div>
                 </div>
-              </div>
               </div>
             </div>
             
             <div className="overflow-auto flex-1 bg-gray-50" style={{ height: 'calc(100vh - 200px)' }}>
               <div className="p-4">
                 <div 
-                  className={`mx-auto shadow-lg transition-all duration-300 ${
-                    removeBackground ? 'shadow-none' : 'shadow-lg'
-                  }`}
+                  className={`mx-auto transition-all duration-300 ${removeBackground ? 'shadow-none' : 'shadow-lg'}`}
                   style={{ 
                     width: '210mm',
                     minHeight: '297mm',
@@ -665,7 +670,7 @@ const ResumeBuilder = () => {
                     data={resumeData} 
                     template={resumeData.template} 
                     accentColor={resumeData.accent_color}
-                    sections={resumeData.sections}
+                    sections={sections.filter(s => s.id !== 'personal' && isSectionComplete(s.id))}
                     classes="w-full h-full"
                   />
                 </div>
@@ -675,7 +680,8 @@ const ResumeBuilder = () => {
         </div>
       </div>
     </div>
+
   )
 }
 
-export default ResumeBuilder
+export default ResumeBuilder;

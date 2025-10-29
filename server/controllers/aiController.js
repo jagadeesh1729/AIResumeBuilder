@@ -114,8 +114,15 @@ export const uploadResume = async (req, res) => {
                 graduation_date: { type: String },
                 gpa: { type: String },
             }
-        ],          
-        }
+        ],
+        certification: [
+            {
+                name: { type: String },
+                issuer: { type: String },
+                issue_date: { type: String },
+            }
+        ]
+    }
         `;
 
        const response = await ai.chat.completions.create({

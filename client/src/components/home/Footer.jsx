@@ -7,7 +7,7 @@ const Footer = () => {
 <footer className="flex flex-wrap justify-center lg:justify-between overflow-hidden gap-10 md:gap-20 py-16 px-6 md:px-16 lg:px-24 xl:px-32 text-[13px] text-gray-500 bg-gradient-to-r from-white via-[#3FA9F533] to-white mt-40">
         <div className="flex flex-wrap items-start gap-10 md:gap-[60px] xl:gap-[140px]">
             <a href="#">
-                <img src="/jamicajobZ.png" alt="logo" className="h-32 w-auto" />
+                <img src="/resume_logo.jpg" alt="logo" className="h-32 w-auto" />
             </a>
             <div>
                 <p className="text-slate-800 font-semibold">Product</p>
