@@ -1,0 +1,61 @@
+@media screen {
+  .preview-container {
+    background-color: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    min-height: 297mm;
+  }
+}
+
+.export-frame {
+  margin-left: auto;
+  margin-right: auto;
+  background-color: white;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e5e7eb;
+  width: 816px;
+  min-height: 1056px;
+}
+
+@page {
+  size: letter;
+  margin: 0.5in;
+}
+
+@media print {
+  html, body {
+    width: 8.5in;
+    height: 11in;
+    overflow: visible;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  body * {
+    visibility: hidden;
+  }
+
+  #resume-preview, #resume-preview * {
+    visibility: visible;
+  }
+
+  #resume-preview {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: auto;
+    margin: 0;
+    padding: 0;
+    box-shadow: none !important;
+    border: none !important;
+    border-radius: 0 !important;
+  }
+
+  .export-frame, .preview-container {
+    background: white !important;
+    box-shadow: none !important;
+    border: none !important;
+  }
+}
